@@ -7,6 +7,18 @@
 - Flutter 3.8.1+
 - Dart SDK
 
+#### Reset DB
+```bash
+python -m flask shell
+```
+
+```bash
+from app import db
+db.drop_all()
+db.create_all()
+exit()
+```
+
 ## Installation & Setup
 
 ### 1. Clone the Project
@@ -65,8 +77,6 @@ createdb culinarylens
 python app.py
 ```
 
-The backend service will run on `http://localhost:5000`
-
 ### 3. Frontend Setup
 
 #### 3.1 Navigate to Frontend Directory
@@ -81,24 +91,8 @@ flutter pub get
 
 #### 3.3 Run Frontend Application
 
-**Web version:**
 ```bash
-flutter run -d chrome
-```
-
-**iOS Simulator:**
-```bash
-flutter run -d ios
-```
-
-**Android Emulator:**
-```bash
-flutter run -d android
-```
-
-**Desktop (macOS):**
-```bash
-flutter run -d macos
+flutter run
 ```
 
 ## API Documentation
