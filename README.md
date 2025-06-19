@@ -38,12 +38,7 @@ cd backend
 #### 2.2 Create Virtual Environment
 ```bash
 python -m venv venv
-
-# macOS/Linux
 source venv/bin/activate
-
-# Windows
-venv\Scripts\activate
 ```
 
 #### 2.3 Install Dependencies
@@ -64,11 +59,8 @@ GOOGLE_API_KEY=your_google_ai_api_key_here
 
 #### 2.5 Setup PostgreSQL Database
 ```bash
-# Install PostgreSQL (macOS with Homebrew)
 brew install postgresql
 brew services start postgresql
-
-# Create database
 createdb culinarylens
 ```
 
