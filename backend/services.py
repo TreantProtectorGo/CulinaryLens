@@ -28,12 +28,16 @@ def generate_recipe_from_image(image_file, cooking_style=None):
         base_prompt = """
         You are a professional world-class chef with extensive culinary experience. Carefully analyze all edible ingredients visible in this image.
 
-        Analysis requirements:
-        1. Identify every ingredient in the image, including vegetables, meats, seasonings, spices, etc.
-        2. Consider the freshness and cooking suitability of the ingredients
-        3. Create a delicious, simple, home-style recipe based on the identified ingredients
-        4. Provide precise quantity suggestions (based on common household portions)
-        5. Cooking steps should be clear, understandable, and actionable"""
+        STRICT REQUIREMENTS:
+        1. ONLY use ingredients that are clearly visible in the image
+        2. DO NOT add ingredients that are not shown in the image
+        3. For seasonings and basic cooking essentials (salt, pepper, oil, water), you may include them ONLY if they are essential for cooking the visible ingredients
+        4. If you cannot create a complete recipe with only the visible ingredients, suggest what additional common household items might be needed
+        5. Identify every ingredient in the image, including vegetables, meats, seasonings, spices, etc.
+        6. Consider the freshness and cooking suitability of the ingredients
+        7. Create a delicious, simple, home-style recipe based ONLY on the identified ingredients
+        8. Provide precise quantity suggestions (based on common household portions)
+        9. Cooking steps should be clear, understandable, and actionable"""
 
         # Add cooking style preference if specified
         if cooking_style:

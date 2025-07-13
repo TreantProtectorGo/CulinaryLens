@@ -32,6 +32,9 @@ def generate_recipe_endpoint():
     # 2. Get cooking style from form data (optional)
     cooking_style = request.form.get('cooking_style', None)
     
+    # 2.5. Get source information (optional)
+    source = request.form.get('source', 'direct_upload')
+    
     # 3. Call the service layer to generate the recipe
     recipe_data = generate_recipe_from_image(image_file, cooking_style)
     
@@ -40,6 +43,14 @@ def generate_recipe_endpoint():
         
     # 4. Save the generated recipe to the database
     try:
+        # Log different behavior based on source
+        if source == 'n8n_automation':
+            print(f"📧 n8n Automation: Generated and saving recipe '{recipe_data['title']}'")
+        elif source == 'flutter_app':
+            print(f"📱 Flutter App: Generated and saving recipe '{recipe_data['title']}'")
+        else:
+            print(f"🖼️ Direct Upload: Generated and saving recipe '{recipe_data['title']}'")
+            
         new_recipe = Recipe(
             title=recipe_data['title'],
             description=recipe_data['description'],
@@ -59,6 +70,46 @@ def generate_recipe_endpoint():
         db.session.rollback() # Rollback the transaction in case of an error
         print(f"Database save error: {e}")
         return jsonify({'error': 'Internal error while saving the recipe'}), 500
+
+@app.route('/api/recipes', methods=['GET'])
+def get_all_recipes():
+    """
+    Get all recipes from the database - for checking if data is saved
+    """
+    try:
+        recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
+        recipe_list = [recipe.to_dict() for recipe in recipes]
+        
+        return jsonify({
+            'total_recipes': len(recipe_list),
+            'recipes': recipe_list
+        }), 200
+        
+    except Exception as e:
+        print(f"Error fetching recipes: {e}")
+        return jsonify({'error': 'Failed to fetch recipes'}), 500
+
+@app.route('/api/recipes/latest', methods=['GET'])
+def get_latest_recipe():
+    """
+    Get the most recent recipe - useful for quick verification
+    """
+    try:
+        latest_recipe = Recipe.query.order_by(Recipe.created_at.desc()).first()
+        
+        if latest_recipe:
+            return jsonify({
+                'message': 'Latest recipe found',
+                'recipe': latest_recipe.to_dict()
+            }), 200
+        else:
+            return jsonify({
+                'message': 'No recipes found in database'
+            }), 404
+            
+    except Exception as e:
+        print(f"Error fetching latest recipe: {e}")
+        return jsonify({'error': 'Failed to fetch latest recipe'}), 500
 
 if __name__ == '__main__':
     # This block ensures that database tables are created before the app runs for the first time.
